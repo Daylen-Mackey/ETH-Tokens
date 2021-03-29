@@ -1,0 +1,16 @@
+var MaToken = artifacts.require("./MaToken.sol")
+
+contract("MaToken", function (accounts) {
+
+    it("sets the total supply upon deployment", function () {
+
+        return MaToken.deployed().then(function (instance) {
+            tokenInstance = instance;
+            return tokenInstance.totalSupply();
+        }).then(function (totalSupply) {
+            assert.equal(totalSupply.toNumber(), 1000000, "sets the total supply to 1 milion")
+        })
+    })
+
+
+})
