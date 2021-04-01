@@ -20,9 +20,6 @@ contract("MaToken", function (accounts) {
             assert.equal(standard, "MAT v1.0")
         })
 
-
-
-
     })
 
     it("Allocates initial supply upon deployment", function () {
@@ -69,4 +66,37 @@ contract("MaToken", function (accounts) {
             assert.equal(balance.toNumber(), 750000, "deducts the amount")
         })
     })
+
+
+
+    it ("Approves tokens for delegaed transfers", function(){
+      var tokenInstance;
+      return MaToken.deployed().then(function(instance){
+        tokenInstance = instance;
+        return tokenInstance.approve.call(accounts[1],100);
+      }).then(function(success){
+        assert.equal(success,true,"Delegation was approved")
+        return tokenInstance.approve(accounts[1],100, {from : accounts[0]})
+      }).then(function(receipt){
+        assert.equal(receipt.logs.length, 1, "Triggers one event")
+        assert.equal(receipt.logs[0].event , "Approval", "Is a transfer event")
+        assert.equal(receipt.logs[0].args._owner, accounts[0], "Logs where the token is from")
+        assert.equal(receipt.logs[0].args._spender, accounts[1], "Logs where the token is going")
+        assert.equal(receipt.logs[0].args._value, 100, "Logs the proper transfer amount")
+        return tokenInstance.allowance(accounts[0], accounts[1]);
+      }).then(function(allowance){
+        assert.equal(allowance.toNumber(), 100, "stores the allowance for delegated transfers")
+      })
+    })
+
+
+
+
+
+
+
+
+
+
+
 })
