@@ -57,6 +57,24 @@ contract MaToken {
     }
 
     //transfer from
+    // Essentially allows us handle delegated transfers --> allocate / transfer fundds from your allowances
+    function transferFrom (address _from, address _to, uint256 _value) public returns (bool success) {
+      // Goals:
+      // Change the balance
+      // update the allowances
+      // fire a transfer event
+      // return a boolean
+      require(balanceOf[_from] >= _value);
+      require(allowance[_from][msg.sender] >= _value);
+      balanceOf[_from] -= _value;
+      allowance[_from][msg.sender] -= _value;
+      balanceOf[_to] += _value;
+
+      emit Transfer(_from, _to, _value);
+
+
+      return true;
+    }
 
 
 
