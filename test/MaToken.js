@@ -89,7 +89,7 @@ contract("MaToken", function (accounts) {
       })
     })
 
-    it('handles delegated token transfers', function() {
+    it('Handles delegated token transfers', function() {
         return MaToken.deployed().then(function(instance) {
           tokenInstance = instance;
           fromAccount = accounts[2];
