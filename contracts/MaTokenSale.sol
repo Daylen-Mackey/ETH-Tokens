@@ -44,9 +44,6 @@ contract MaTokenSale{
     function buyTokens(uint256 _numberOfTokens) public payable {
 
 
-
-        
-
         // Require that value spent is equal to the tokens
         require(msg.value == multiply(_numberOfTokens, tokenPrice));
 
@@ -64,7 +61,13 @@ contract MaTokenSale{
         // emit DebugNumTokens(_numberOfTokens);
         //Emit Sell event 
 
-        
+    }
+
+    function endSale() public{
+        // Require that only an admin can do this
+        require(msg.sender == admin);
+        // Transfer remaining tokens in the sale back to the admin 
+        require(tokenContract.transfer(admin,tokenContract.balanceOf(address(this))));
 
 
     }

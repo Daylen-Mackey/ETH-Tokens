@@ -69,4 +69,33 @@ contract("MaTokenSale", function (accounts) {
             assert(error.message.indexOf('revert') >= 0, 'cannot purchase more tokens than available');
         });
       });
+
+
+      it ("ends token sale", function(){
+        return MaToken.deployed().then(function(instance) {
+          // Grab token instance first
+          tokenInstance = instance;
+          return MaTokenSale.deployed();
+        }).then(function(instance) {
+          // Then grab token sale instance
+          tokenSaleInstance = instance;
+
+          // Try to end sale from non-admin
+          return tokenSaleInstance.endSale({from : buyer})
+      }).then(assert.fail).catch(function(error){
+        assert(error.message.toString().includes('revert'), 'Non-admin cannot end sale');
+        return tokenSaleInstance.endSale({from : admin})
+
+      }).then(function(receipt){
+        // console.log(receipt)
+        return tokenInstance.balanceOf(admin)
+      }).then(function(balance){
+        assert.equal(balance.toNumber(),999990, "returns all unsold tokens to admin")
+
+        //We can now call the selfdestruct, so let's check the price has been reset
+      //   return tokenSaleInstance.tokenPrice()
+      // }).then(function(price){
+      //   assert.equal(price.toNumber(),0,"token price was reset")
+      })
+})
 })
